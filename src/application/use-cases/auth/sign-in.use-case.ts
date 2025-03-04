@@ -5,13 +5,14 @@ import { getInjection } from "@/di/container";
 import { AuthenticationError } from "@/src/entities/errors/auth";
 import { Cookie } from "@/src/entities/models/cookie";
 import { Session } from "@/src/entities/models/session";
+import { getAuthenticationService } from "@/di/modules/authentication.module";
 
 export function signInUseCase(input: {
   username: string;
   password: string;
 }): Promise<{ session: Session; cookie: Cookie }> {
   return startSpan({ name: "signIn Use Case", op: "function" }, async () => {
-    const authenticationService = getInjection("IAuthenticationService");
+    const authenticationService = getAuthenticationService();
     const usersRepository = getInjection("IUsersRepository");
 
     const existingUser = await usersRepository.getUserByUsername(

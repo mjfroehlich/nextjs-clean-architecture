@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { startSpan } from "@sentry/nextjs";
 
-import { getInjection } from "@/di/container";
+import { getAuthenticationService } from "@/di/modules/authentication.module";
 import { toggleTodoUseCase } from "@/src/application/use-cases/todos/toggle-todo.use-case";
 import { UnauthenticatedError } from "@/src/entities/errors/auth";
 import { InputParseError } from "@/src/entities/errors/common";
@@ -27,7 +27,7 @@ export async function toggleTodoController(
       throw new UnauthenticatedError("Must be logged in to create a todo");
     }
 
-    const authenticationService = getInjection("IAuthenticationService");
+    const authenticationService = getAuthenticationService();
     const { session } = await authenticationService.validateSession(sessionId);
 
     const { data, error: inputParseError } = inputSchema.safeParse(input);

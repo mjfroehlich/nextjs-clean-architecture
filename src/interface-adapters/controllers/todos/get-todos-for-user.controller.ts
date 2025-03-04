@@ -1,6 +1,6 @@
 import { startSpan } from "@sentry/nextjs";
 
-import { getInjection } from "@/di/container";
+import { getAuthenticationService } from "@/di/modules/authentication.module";
 import { getTodosForUserUseCase } from "@/src/application/use-cases/todos/get-todos-for-user.use-case";
 import { UnauthenticatedError } from "@/src/entities/errors/auth";
 import { Todo } from "@/src/entities/models/todo";
@@ -24,7 +24,7 @@ export async function getTodosForUserController(
       throw new UnauthenticatedError("Must be logged in to create a todo");
     }
 
-    const authenticationService = getInjection("IAuthenticationService");
+    const authenticationService = getAuthenticationService();
     const { session } = await authenticationService.validateSession(sessionId);
 
     const todos = await getTodosForUserUseCase(session.userId);

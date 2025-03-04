@@ -1,7 +1,7 @@
 import { Container } from "inversify";
 import { startSpan } from "@sentry/nextjs";
 
-import { AuthenticationModule } from "./modules/authentication.module";
+import { destroyAuthenticationService } from "./modules/authentication.module";
 import { TodosModule } from "./modules/todos.module";
 import { DI_RETURN_TYPES, DI_SYMBOLS } from "./types";
 import { UsersModule } from "./modules/users.module";
@@ -13,13 +13,12 @@ const ApplicationContainer = new Container({
 export const initializeContainer = () => {
   ApplicationContainer.load(TodosModule);
   ApplicationContainer.load(UsersModule);
-  ApplicationContainer.load(AuthenticationModule);
 };
 
 export const destroyContainer = () => {
-  ApplicationContainer.unload(AuthenticationModule);
   ApplicationContainer.unload(UsersModule);
   ApplicationContainer.unload(TodosModule);
+  destroyAuthenticationService();
 };
 
 if (process.env.NODE_ENV !== "test") {

@@ -2,6 +2,7 @@ import { z } from "zod";
 import { startSpan } from "@sentry/nextjs";
 
 import { getInjection } from "@/di/container";
+import { getAuthenticationService } from "@/di/modules/authentication.module";
 import { createTodoUseCase } from "@/src/application/use-cases/todos/create-todo.use-case";
 import { UnauthenticatedError } from "@/src/entities/errors/auth";
 import { InputParseError } from "@/src/entities/errors/common";
@@ -32,7 +33,7 @@ export async function createTodoController(
       if (!sessionId) {
         throw new UnauthenticatedError("Must be logged in to create a todo");
       }
-      const authenticationService = getInjection("IAuthenticationService");
+      const authenticationService = getAuthenticationService();
       const { user } = await authenticationService.validateSession(sessionId);
 
       const { data, error: inputParseError } = inputSchema.safeParse(input);

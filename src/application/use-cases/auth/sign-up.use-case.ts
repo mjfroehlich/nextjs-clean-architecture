@@ -2,6 +2,8 @@ import { hash } from "@node-rs/argon2";
 import { startSpan } from "@sentry/nextjs";
 
 import { getInjection } from "@/di/container";
+import { getAuthenticationService } from "@/di/modules/authentication.module";
+
 import { AuthenticationError } from "@/src/entities/errors/auth";
 import { Cookie } from "@/src/entities/models/cookie";
 import { Session } from "@/src/entities/models/session";
@@ -33,7 +35,7 @@ export function signUpUseCase(input: {
         }),
     );
 
-    const authenticationService = getInjection("IAuthenticationService");
+    const authenticationService = getAuthenticationService();
     const userId = authenticationService.generateUserId();
 
     const newUser = await usersRepository.createUser({
